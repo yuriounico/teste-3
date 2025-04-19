@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página Inicial - Comentário Fantasma</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 20px 0;
+    }
+    h1 {
+      margin: 0;
+    }
+    .content {
+      padding: 40px;
+    }
+    footer {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+    /* Estilos para a página de comentário */
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: 20px auto;
+    }
+    #comentarios-section {
+      margin-top: 40px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: 20px auto;
+    }
+    .comentario {
+      background: #f9f9f9;
+      border-left: 4px solid #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    .comentario strong {
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho e botão de redirecionamento -->
+  <header>
+    <h1>Bem-vindo ao Meu Site!</h1>
+  </header>
+  <div class="content">
+    <p>Este é o conteúdo principal da página inicial. Clique no botão abaixo para ser redirecionado:</p>
+    <button onclick="window.location.href='comentarios2teste'">Clique aqui</button>
+  </div>
+
+  <!-- Formulário de Comentários -->
+  <section>
+    <h1>Comentário Fantasma</h1>
+    <form id="formulario">
+      <input type="text" id="nome" placeholder="Seu nome ou apelido" required /><br><br>
+      <textarea id="mensagem" placeholder="Escreva seu comentário" required></textarea><br><br>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <!-- Seção dos comentários -->
+  <section id="comentarios-section">
+    <h2>Comentários recentes</h2>
+    <div id="comentarios"></div>
+  </section>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCZ0YWz_dwC3hFPLpEK_QkI7_A_qCoJcwM",
+      authDomain: "servidor-teste-2.firebaseapp.com",
+      databaseURL: "https://servidor-teste-2-default-rtdb.firebaseio.com",
+      projectId: "servidor-teste-2",
+      storageBucket: "servidor-teste-2.firebasestorage.app",
+      messagingSenderId: "516221204635",
+      appId: "1:516221204635:web:26dcd9308f94f64eeb2e3e",
+      measurementId: "G-6NWPP471YB"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const form = document.getElementById('formulario');
+    const nome = document.getElementById('nome');
+    const mensagem = document.getElementById('mensagem');
+    const comentariosDiv = document.getElementById('comentarios');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const comentario = {
+        nome: nome.value || "Anônimo",
+        mensagem: mensagem.value,
+        timestamp: Date.now()
+      };
+
+      db.ref('comentarios').push(comentario);
+      mensagem.value = "";
+    });
+
+    db.ref('comentarios').on('child_added', (snapshot) => {
+      const c = snapshot.val();
+      if (!c) return;
+
+      const div = document.createElement('div');
+      div.className = 'comentario';
+      div.innerHTML = `<strong>${c.nome}</strong><br>${c.mensagem}`;
+      comentariosDiv.prepend(div);
+    });
+  </script>
+
+  <footer>
+    <p>© 2025 Meu Site. Todos os direitos reservados.</p>
+  </footer>
+</body>
+</html>
+
